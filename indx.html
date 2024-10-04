@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고급 수학 도구 및 딥러닝</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>고급 수학 도구 및 딥러닝</h1>
+
+        <!-- 수학 문제 계산 -->
+        <div class="input-group">
+            <label for="mathInput">수학 문제 입력:</label>
+            <input type="text" id="mathInput" placeholder="예: 2 + 2 또는 sin(30)">
+            <button id="calculateButton">계산하기</button>
+            <div class="result" id="result"></div>
+        </div>
+
+        <!-- 복소수 계산 -->
+        <div class="input-group">
+            <label for="complexInput">복소수 입력 (형식: a + bi):</label>
+            <input type="text" id="complexInput" placeholder="예: 3 + 4i">
+            <button id="calculateComplexButton">복소수 계산</button>
+            <div class="result" id="complexResult"></div>
+        </div>
+
+        <!-- 삼각 함수 계산 -->
+        <div class="input-group">
+            <label for="trigFunction">삼각 함수 (예: sin, cos, tan):</label>
+            <input type="text" id="trigFunction" placeholder="예: sin(45)">
+            <button id="calculateTrigButton">삼각 함수 계산</button>
+            <div class="result" id="trigResult"></div>
+        </div>
+
+        <!-- 문제 생성기 -->
+        <div class="input-group">
+            <label for="generateQuestion">문제 생성기:</label>
+            <select id="generateQuestion">
+                <option value="addition">덧셈 문제</option>
+                <option value="subtraction">뺄셈 문제</option>
+                <option value="multiplication">곱셈 문제</option>
+                <option value="division">나눗셈 문제</option>
+            </select>
+            <button id="generateButton">문제 생성하기</button>
+            <div class="result" id="generatedQuestion"></div>
+        </div>
+
+        <!-- 강화 학습 시뮬레이터 -->
+        <div class="input-group">
+            <h2>강화 학습 시뮬레이터</h2>
+            <canvas id="mazeCanvas" width="400" height="400"></canvas>
+            <button id="startButton">학습 시작</button>
+            <div class="result" id="rlResult"></div>
+        </div>
+
+        <!-- 딥러닝 예측 기능 -->
+        <div class="input-group">
+            <h2>딥러닝 예측</h2>
+            <input type="number" id="inputNumber" placeholder="0에서 9 사이의 숫자 입력">
+            <button id="predictButton">예측하기</button>
+            <div class="result" id="deepLearningResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // 수학 문제 계산
+        document.getElementById('calculateButton').addEventListener('click', function () {
+            const input = document.getElementById('mathInput').value;
+            const resultElement = document.getElementById('result');
+            try {
+                const answer = eval(input);
+                resultElement.innerText = `결과: ${answer}`;
+            } catch (error) {
+                resultElement.innerText = '유효하지 않은 수식입니다. 다시 시도하세요.';
+            }
+        });
+
+        // 복소수 계산
+        document.getElementById('calculateComplexButton').addEventListener('click', function () {
+            const input = document.getElementById('complexInput').value;
+            const resultElement = document.getElementById('complexResult');
+            try {
+                const complexNumber = math.complex(input);
+                const conjugate = math.conj(complexNumber);
+                resultElement.innerText = `복소수: ${complexNumber} \n켤레 복소수: ${conjugate}`;
+            } catch (error) {
+                resultElement.innerText = '유효하지 않은 복소수입니다. 다시 시도하세요.';
+            }
+        });
+
+        // 삼각 함수 계산
+        document.getElementById('calculateTrigButton').addEventListener('click', function () {
+            const input = document.getElementById('trigFunction').value;
+            const resultElement = document.getElementById('trigResult');
+            try {
+                const answer = eval(input);
+                resultElement.innerText = `결과: ${answer}`;
+            } catch (error) {
+                resultElement.innerText = '유효하지 않은 삼각 함수입니다. 다시 시도하세요.';
+            }
+        });
+
+        // 문제 생성기
+        document.getElementById('generateButton').addEventListener('click', function () {
+            const type = document.getElementById('generateQuestion').value;
+            const resultElement = document.getElementById('generatedQuestion');
+            let question;
+            switch (type) {
+                case 'addition':
+                    question = `${Math.floor(Math.random() * 10)} + ${Math.floor(Math.random() * 10)}`;
+                    break;
+                case 'subtraction':
+                    question = `${Math.floor(Math.random() * 10)} - ${Math.floor(Math.random() * 10)}`;
+                    break;
+                case 'multiplication':
+                    question = `${Math.floor(Math.random() * 10)} * ${Math.floor(Math.random() * 10)}`;
+                    break;
+                case 'division':
+                    question = `${Math.floor(Math.random() * 10) + 1} / ${Math.floor(Math.random() * 9) + 1}`;
+                    break;
+            }
+            resultElement.innerText = `생성된 문제: ${question}`;
+        });
+
+        // 강화 학습 시뮬레이터
+        const mazeCanvas = document.getElementById('mazeCanvas');
+        const mazeCtx = mazeCanvas.getContext('2d');
+
+        const gridSize = 40;
+        const rows = 10;
+        const cols = 10;
+        const maze = [
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+            [0, 1, 1, 1,  1, 1, 1, 0, 1, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        ];
+        let qTable = {};
+        let agentPosition = { x: 0, y: 0 };
+        const actions = ['up', 'down', 'left', 'right'];
+        const learningRate = 0.1;
+        const discountFactor = 0.9;
+        const epsilon = 0.1; // 탐색 비율
+
+        function drawMaze() {
+            mazeCtx.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (maze[row][col] === 1) {
+                        mazeCtx.fillStyle = 'black';
+                        mazeCtx.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
+                    }
+                }
+            }
+            mazeCtx.fillStyle = 'green';
+            mazeCtx.fillRect(agentPosition.x * gridSize, agentPosition.y * gridSize, gridSize, gridSize);
+        }
+
+        function getState() {
+            return `${agentPosition.x},${agentPosition.y}`;
+        }
+
+        function chooseAction(state) {
+            if (Math.random() < epsilon) {
+                return actions[Math.floor(Math.random() * actions.length)];
+            } else {
+                return actions.reduce((bestAction, action) => {
+                    const qValue = qTable[`${state}_${action}`] || 0;
+                    const bestQValue = qTable[`${state}_${bestAction}`] || 0;
+                    return qValue > bestQValue ? action : bestAction;
+                }, actions[0]);
+            }
+        }
+
+        function moveAgent(action) {
+            const { x, y } = agentPosition;
+            if (action === 'up' && y > 0 && maze[y - 1][x] === 0) agentPosition.y--;
+            else if (action === 'down' && y < rows - 1 && maze[y + 1][x] === 0) agentPosition.y++;
+            else if (action === 'left' && x > 0 && maze[y][x - 1] === 0) agentPosition.x--;
+            else if (action === 'right' && x < cols - 1 && maze[y][x + 1] === 0) agentPosition.x++;
+        }
+
+        function updateQTable(state, action, reward, nextState) {
+            const qValue = qTable[`${state}_${action}`] || 0;
+            const maxNextQ = Math.max(...actions.map(a => qTable[`${nextState}_${a}`] || 0));
+            qTable[`${state}_${action}`] = qValue + learningRate * (reward + discountFactor * maxNextQ - qValue);
+        }
+
+        function learn() {
+            const state = getState();
+            const action = chooseAction(state);
+            moveAgent(action);
+            const nextState = getState();
+            const reward = (agentPosition.x === cols - 1 && agentPosition.y === rows - 1) ? 1 : -0.01; // 보상 설정
+            updateQTable(state, action, reward, nextState);
+            drawMaze();
+
+            if (agentPosition.x === cols - 1 && agentPosition.y === rows - 1) {
+                agentPosition = { x: 0, y: 0 }; // 에이전트를 시작 위치로 재설정
+            }
+        }
+
+        document.getElementById('startButton').addEventListener('click', function () {
+            qTable = {}; // Q-테이블 초기화
+            agentPosition = { x: 0, y: 0 }; // 에이전트를 시작 위치로 초기화
+            drawMaze();
+            const intervalId = setInterval(() => {
+                learn();
+                
+                // 목표에 도달하면 학습 중지
+                if (agentPosition.x === cols - 1 && agentPosition.y === rows - 1) {
+                    clearInterval(intervalId);
+                    document.getElementById('rlResult').innerText = "학습 완료!";
+                }
+            }, 100); // 학습 주기 설정
+        });
+
+        drawMaze(); // 초기 미로 그리기
+
+        // 딥러닝 모델 생성
+        const model = tf.sequential();
+        model.add(tf.layers.dense({units: 10, activation: 'relu', inputShape: [1]}));
+        model.add(tf.layers.dense({units: 1}));
+
+        model.compile({
+            optimizer: 'sgd',
+            loss: 'meanSquaredError',
+        });
+
+        // 데이터 생성: 0에서 9 사이의 숫자
+        const xs = tf.tensor2d([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [10, 1]);
+        const ys = tf.tensor2d([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], [10, 1]); // y = x^2
+
+        // 모델 학습
+        async function trainModel() {
+            await model.fit(xs, ys, {epochs: 100});
+            console.log("모델 학습 완료");
+        }
+
+        trainModel();
+
+        // 예측 기능
+        document.getElementById('predictButton').addEventListener('click', async () => {
+            const inputValue = parseFloat(document.getElementById('inputNumber').value);
+            if (isNaN(inputValue) || inputValue < 0 || inputValue > 9) {
+                document.getElementById('deepLearningResult').innerText = '0에서 9 사이의 숫자를 입력하세요.';
+                return;
+            }
+
+            const inputTensor = tf.tensor2d([inputValue], [1, 1]);
+            const prediction = model.predict(inputTensor);
+            const resultValue = prediction.dataSync()[0];
+
+            document.getElementById('deepLearningResult').innerText = `예측 결과: ${resultValue.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
+
